@@ -10,6 +10,7 @@ import { NexusView } from '@/components/cosmic/NexusView'
 import { ChatInterface } from '@/components/chat/ChatInterface'
 import { LifeAreasMap } from '@/components/cosmic/LifeAreasMap'
 import { WeeklyQuests } from '@/components/cosmic/WeeklyQuests'
+import { CarvIdIntegration } from '@/components/cosmic/CarvIdIntegration'
 import { ShootingStars } from "@/components/ui/shooting-stars";
 import { StarsBackground } from "@/components/ui/stars-background";
 
@@ -207,6 +208,15 @@ export default function Home() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#0a0a0a]" />
             <div className="relative z-10">
               <WeeklyQuests />
+            </div>
+          </div>
+        )
+      case 'carv-id':
+        return (
+          <div className="min-h-screen p-6 relative overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-br from-[#0f0f23] via-[#1a1a2e] to-[#0a0a0a]" />
+            <div className="relative z-10">
+              <CarvIdIntegration />
             </div>
           </div>
         )

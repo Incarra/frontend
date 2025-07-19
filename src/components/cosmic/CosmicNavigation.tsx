@@ -3,7 +3,7 @@
 import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { cn, cosmicBorders } from '@/lib/utils'
-import { Home, Users, Brain, BookOpen, MessageCircle, Star, Target, User, UserPlus, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Home, Users, Brain, BookOpen, MessageCircle, Star, Target, User, UserPlus, Shield, ChevronLeft, ChevronRight } from 'lucide-react'
 
 interface CosmicNavigationProps {
   activeView: string
@@ -61,6 +61,13 @@ export function CosmicNavigation({ activeView, onViewChange }: CosmicNavigationP
       label: 'Quests',
       description: 'Weekly challenges',
       icon: Target,
+      color: 'text-[#ffd700]'
+    },
+    {
+      id: 'carv-id',
+      label: 'Carv ID',
+      description: 'Your unique identifier',
+      icon: Shield,
       color: 'text-[#ffd700]'
     }
   ]

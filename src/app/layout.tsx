@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { WalletProvider } from "@/components/providers/WalletProvider";
+import { Toaster } from "sonner";
 import '@rainbow-me/rainbowkit/styles.css';
 import "./globals.css";
 
@@ -47,6 +48,7 @@ export default function RootLayout({
       >
         <WalletProvider>
           {children}
+          <Toaster position="top-right" richColors />
         </WalletProvider>
       </body>
     </html>
