@@ -1,61 +1,67 @@
-'use client'
+"use client";
 
-import { motion } from 'framer-motion'
-import { ConnectButton } from '@rainbow-me/rainbowkit'
-import { cn, cosmicBorders } from '@/lib/utils'
-import { Wallet, LogOut, Copy, ExternalLink } from 'lucide-react'
-import { useState, useRef } from 'react'
-import { useDisconnect } from 'wagmi'
+import { motion } from "framer-motion";
+import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { cn, cosmicBorders } from "@/lib/utils";
+import { Wallet, LogOut, Copy, ExternalLink } from "lucide-react";
+import { useState, useRef } from "react";
+import { useDisconnect } from "wagmi";
 
 export function CosmicWalletConnect() {
-  const [copied, setCopied] = useState(false)
-  const currentAddressRef = useRef<string | undefined>()
-  const { disconnect } = useDisconnect()
+  const [copied, setCopied] = useState(false);
+  const currentAddressRef = useRef<string | undefined>(undefined);
+  const { disconnect } = useDisconnect();
 
   const copyAddress = async () => {
     if (currentAddressRef.current) {
-      await navigator.clipboard.writeText(currentAddressRef.current)
-      setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      await navigator.clipboard.writeText(currentAddressRef.current);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     }
-  }
+  };
 
   const formatAddress = (addr: string | undefined) => {
-    if (!addr) return 'Unknown Address'
-    
+    if (!addr) return "Unknown Address";
+
     // Handle different address formats
     if (addr.length >= 10) {
-      return `${addr.slice(0, 6)}...${addr.slice(-4)}`
+      return `${addr.slice(0, 6)}...${addr.slice(-4)}`;
     } else {
-      return addr // Return as-is if too short to format
+      return addr; // Return as-is if too short to format
     }
-  }
+  };
 
   const openExplorer = () => {
     if (currentAddressRef.current) {
       // Handle different blockchain explorers
       if (currentAddressRef.current.length === 44) {
         // Solana address format
-        window.open(`https://solscan.io/account/${currentAddressRef.current}`, '_blank')
+        window.open(
+          `https://solscan.io/account/${currentAddressRef.current}`,
+          "_blank"
+        );
       } else {
         // Ethereum address format (default)
-        window.open(`https://etherscan.io/address/${currentAddressRef.current}`, '_blank')
+        window.open(
+          `https://etherscan.io/address/${currentAddressRef.current}`,
+          "_blank"
+        );
       }
     }
-  }
+  };
 
   const handleDisconnect = () => {
     try {
-      console.log('Attempting to disconnect...')
-      disconnect()
-      currentAddressRef.current = undefined
-      console.log('Disconnect called successfully')
+      console.log("Attempting to disconnect...");
+      disconnect();
+      currentAddressRef.current = undefined;
+      console.log("Disconnect called successfully");
     } catch (error) {
-      console.error('Disconnect error:', error)
+      console.error("Disconnect error:", error);
       // Force reload as last resort
-      window.location.reload()
+      window.location.reload();
     }
-  }
+  };
 
   return (
     <div className="relative">
@@ -68,22 +74,25 @@ export function CosmicWalletConnect() {
           openConnectModal,
           mounted,
         }) => {
-          const ready = mounted
-          const connected = ready && account && chain
+          const ready = mounted;
+          const connected = ready && account && chain;
 
           // Update current address when account changes (simple approach)
-          if (account?.address && account.address !== currentAddressRef.current) {
-            currentAddressRef.current = account.address
+          if (
+            account?.address &&
+            account.address !== currentAddressRef.current
+          ) {
+            currentAddressRef.current = account.address;
           }
 
           return (
             <div
               {...(!ready && {
-                'aria-hidden': true,
+                "aria-hidden": true,
                 style: {
                   opacity: 0,
-                  pointerEvents: 'none',
-                  userSelect: 'none',
+                  pointerEvents: "none",
+                  userSelect: "none",
                 },
               })}
             >
@@ -111,7 +120,7 @@ export function CosmicWalletConnect() {
                         <span>Connect Stellar Wallet</span>
                       </motion.button>
                     </motion.div>
-                  )
+                  );
                 }
 
                 if (chain.unsupported) {
@@ -130,7 +139,7 @@ export function CosmicWalletConnect() {
                     >
                       <span>Wrong Network</span>
                     </motion.button>
-                  )
+                  );
                 }
 
                 return (
@@ -159,7 +168,9 @@ export function CosmicWalletConnect() {
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="text-[#00bfff]/80 text-xs">Address</span>
+                        <span className="text-[#00bfff]/80 text-xs">
+                          Address
+                        </span>
                         <div className="flex items-center space-x-2">
                           <span className="text-[#ffd700] font-mono text-xs">
                             {formatAddress(account.address)}
@@ -195,7 +206,9 @@ export function CosmicWalletConnect() {
                       )}
 
                       <div className="flex items-center justify-between">
-                        <span className="text-[#00bfff]/80 text-xs">Network</span>
+                        <span className="text-[#00bfff]/80 text-xs">
+                          Network
+                        </span>
                         <div className="flex items-center space-x-2">
                           {chain.hasIcon && (
                             <div
@@ -204,37 +217,43 @@ export function CosmicWalletConnect() {
                                 width: 12,
                                 height: 12,
                                 borderRadius: 999,
-                                overflow: 'hidden',
+                                overflow: "hidden",
                               }}
                             >
                               {chain.iconUrl && (
                                 <img
-                                  alt={chain.name ?? 'Chain icon'}
+                                  alt={chain.name ?? "Chain icon"}
                                   src={chain.iconUrl}
                                   style={{ width: 12, height: 12 }}
                                 />
                               )}
                             </div>
                           )}
-                          <span className="text-[#ffd700] font-mono text-xs">{chain.name}</span>
+                          <span className="text-[#ffd700] font-mono text-xs">
+                            {chain.name}
+                          </span>
                         </div>
                       </div>
 
                       <div className="flex items-center justify-between">
-                        <span className="text-[#00bfff]/80 text-xs">Status</span>
+                        <span className="text-[#00bfff]/80 text-xs">
+                          Status
+                        </span>
                         <div className="flex items-center space-x-2">
                           <div className="w-2 h-2 rounded-full bg-[#7fff00] animate-pulse" />
-                          <span className="text-[#7fff00] text-xs font-mono">Connected</span>
+                          <span className="text-[#7fff00] text-xs font-mono">
+                            Connected
+                          </span>
                         </div>
                       </div>
                     </div>
                   </motion.div>
-                )
+                );
               })()}
             </div>
-          )
+          );
         }}
       </ConnectButton.Custom>
     </div>
-  )
-} 
+  );
+}

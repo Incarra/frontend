@@ -1,95 +1,110 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, CheckCircle, XCircle, ExternalLink, Copy, AlertCircle, User, Key } from 'lucide-react'
-import { cn, cosmicBorders } from '@/lib/utils'
-import { useIncarraContract } from '@/hooks/useIncarraContract'
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Shield,
+  CheckCircle,
+  XCircle,
+  ExternalLink,
+  Copy,
+  AlertCircle,
+  User,
+  Key,
+} from "lucide-react";
+import { cn, cosmicBorders } from "@/lib/utils";
+import { useIncarraContract } from "@/hooks/useIncarraContract";
+import Image from "next/image";
 
 export function CarvIdIntegration() {
-  const [carvId, setCarvId] = useState('')
-  const [isConnecting, setIsConnecting] = useState(false)
-  const [isVerifying, setIsVerifying] = useState(false)
-  const [verificationProof, setVerificationProof] = useState('')
-  const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
-  
-  const { 
-    incarraAgent, 
-    carvProfile, 
+  const [carvId, setCarvId] = useState("");
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [verificationProof, setVerificationProof] = useState("");
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
+
+  const {
+    incarraAgent,
+    carvProfile,
     verifyCarvId,
-    loading: contractLoading, 
+    loading: contractLoading,
     error: contractError,
-    hasAgent 
-  } = useIncarraContract()
+    hasAgent,
+  } = useIncarraContract();
 
   const handleConnectCarvId = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!carvId.trim()) {
-      setError('Please enter your Carv ID')
-      return
+      setError("Please enter your Carv ID");
+      return;
     }
 
     // Validate Carv ID format (Ethereum address)
-    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/
+    const ethAddressRegex = /^0x[a-fA-F0-9]{40}$/;
     if (!ethAddressRegex.test(carvId.trim())) {
-      setError('Please enter a valid Ethereum address')
-      return
+      setError("Please enter a valid Ethereum address");
+      return;
     }
 
     try {
-      setIsConnecting(true)
-      setError('')
-      setSuccess('')
+      setIsConnecting(true);
+      setError("");
+      setSuccess("");
 
       // In a real app, you'd integrate with Carv's API here
       // For now, we'll simulate the connection
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      setSuccess('Carv ID connected successfully! You can now verify ownership.')
-      
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      setSuccess(
+        "Carv ID connected successfully! You can now verify ownership."
+      );
     } catch (error) {
-      setError('Failed to connect Carv ID. Please try again.')
+      setError("Failed to connect Carv ID. Please try again.");
     } finally {
-      setIsConnecting(false)
+      setIsConnecting(false);
     }
-  }
+  };
 
   const handleVerifyOwnership = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
+    e.preventDefault();
+
     if (!verificationProof.trim()) {
-      setError('Please provide verification proof')
-      return
+      setError("Please provide verification proof");
+      return;
     }
 
     try {
-      setIsVerifying(true)
-      setError('')
-      setSuccess('')
+      setIsVerifying(true);
+      setError("");
+      setSuccess("");
 
       // Simulate MetaMask transaction - send small amount to test address
       if (window.ethereum) {
         try {
-          const accounts = await window.ethereum.request({ method: 'eth_accounts' })
+          const accounts = await window.ethereum.request({
+            method: "eth_accounts",
+          });
           if (accounts.length > 0) {
             // Switch to Sepolia testnet
             await window.ethereum.request({
-              method: 'wallet_switchEthereumChain',
-              params: [{ chainId: '0xaa36a7' }], // Sepolia chainId
-            })
-            
+              method: "wallet_switchEthereumChain",
+              params: [{ chainId: "0xaa36a7" }], // Sepolia chainId
+            });
+
             await window.ethereum.request({
-              method: 'eth_sendTransaction',
-              params: [{
-                from: accounts[0],
-                to: '0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6', // Test address
-                value: '0x2386f26fc10000', // 0.01 ETH in wei
-                gas: '0x5208', // 21000 gas
-                chainId: '0xaa36a7', // Sepolia chainId
-              }],
-            })
+              method: "eth_sendTransaction",
+              params: [
+                {
+                  from: accounts[0],
+                  to: "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6", // Test address
+                  value: "0x2386f26fc10000", // 0.01 ETH in wei
+                  gas: "0x5208", // 21000 gas
+                  chainId: "0xaa36a7", // Sepolia chainId
+                },
+              ],
+            });
           }
         } catch (err) {
           // Ignore error, always succeed
@@ -97,22 +112,21 @@ export function CarvIdIntegration() {
       }
 
       // Always succeed for development
-      setSuccess('Carv ID ownership verified successfully!')
+      setSuccess("Carv ID ownership verified successfully!");
       // Optionally update mockCarvData.verified = true if you want to reflect in UI
       // In a real app, update state or refetch profile
-
     } catch (error) {
-      setError('Failed to verify ownership. Please try again.')
+      setError("Failed to verify ownership. Please try again.");
     } finally {
-      setIsVerifying(false)
+      setIsVerifying(false);
     }
-  }
+  };
 
   const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
-    setSuccess('Copied to clipboard!')
-    setTimeout(() => setSuccess(''), 2000)
-  }
+    navigator.clipboard.writeText(text);
+    setSuccess("Copied to clipboard!");
+    setTimeout(() => setSuccess(""), 2000);
+  };
 
   const mockCarvData = {
     id: "0x742d35Cc6634C0532925a3b8D4C9db96C4b4d8b6",
@@ -122,14 +136,20 @@ export function CarvIdIntegration() {
     credentials: 5,
     achievements: 12,
     verified: carvProfile?.isVerified || false,
-    lastActive: "2 hours ago"
-  }
+    lastActive: "2 hours ago",
+  };
 
   return (
     <div className="w-full max-w-4xl mx-auto">
       {/* Header */}
       <div className="text-center mb-8">
-        <Shield className="w-16 h-16 text-[#00bfff] mx-auto mb-4" />
+        <Image
+          src="/incarra_logo.png"
+          alt="Incarra Logo"
+          width={100}
+          height={100}
+          className="mx-auto mb-4"
+        />
         <h1 className="text-4xl font-mono text-[#ffd700] mb-2 tracking-wider">
           CARV ID INTEGRATION
         </h1>
@@ -151,8 +171,8 @@ export function CarvIdIntegration() {
         <div className="flex items-start justify-between mb-6">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#00bfff] to-[#8a2be2] p-0.5">
-              <img 
-                src={mockCarvData.avatar} 
+              <img
+                src={mockCarvData.avatar}
                 alt="Carv Avatar"
                 className="w-full h-full rounded-full object-cover"
               />
@@ -174,20 +194,22 @@ export function CarvIdIntegration() {
               </div>
             </div>
           </div>
-          
+
           <div className="text-right">
-            <div className={cn(
-              "flex items-center gap-2 px-3 py-1 rounded text-sm font-mono",
-              mockCarvData.verified
-                ? "bg-[#7fff00]/20 text-[#7fff00] border border-[#7fff00]/30"
-                : "bg-[#ffd700]/20 text-[#ffd700] border border-[#ffd700]/30"
-            )}>
+            <div
+              className={cn(
+                "flex items-center gap-2 px-3 py-1 rounded text-sm font-mono",
+                mockCarvData.verified
+                  ? "bg-[#7fff00]/20 text-[#7fff00] border border-[#7fff00]/30"
+                  : "bg-[#ffd700]/20 text-[#ffd700] border border-[#ffd700]/30"
+              )}
+            >
               {mockCarvData.verified ? (
                 <CheckCircle className="w-4 h-4" />
               ) : (
                 <AlertCircle className="w-4 h-4" />
               )}
-              <span>{mockCarvData.verified ? 'Verified' : 'Unverified'}</span>
+              <span>{mockCarvData.verified ? "Verified" : "Unverified"}</span>
             </div>
           </div>
         </div>
@@ -195,19 +217,27 @@ export function CarvIdIntegration() {
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
           <div className="text-center p-3 rounded-lg bg-[#00bfff]/10 border border-[#00bfff]/20">
-            <div className="text-[#00bfff] font-mono text-lg">{mockCarvData.reputation}</div>
+            <div className="text-[#00bfff] font-mono text-lg">
+              {mockCarvData.reputation}
+            </div>
             <div className="text-[#00bfff]/60 text-xs">Reputation</div>
           </div>
           <div className="text-center p-3 rounded-lg bg-[#ffd700]/10 border border-[#ffd700]/20">
-            <div className="text-[#ffd700] font-mono text-lg">{mockCarvData.credentials}</div>
+            <div className="text-[#ffd700] font-mono text-lg">
+              {mockCarvData.credentials}
+            </div>
             <div className="text-[#ffd700]/60 text-xs">Credentials</div>
           </div>
           <div className="text-center p-3 rounded-lg bg-[#7fff00]/10 border border-[#7fff00]/20">
-            <div className="text-[#7fff00] font-mono text-lg">{mockCarvData.achievements}</div>
+            <div className="text-[#7fff00] font-mono text-lg">
+              {mockCarvData.achievements}
+            </div>
             <div className="text-[#7fff00]/60 text-xs">Achievements</div>
           </div>
           <div className="text-center p-3 rounded-lg bg-[#8a2be2]/10 border border-[#8a2be2]/20">
-            <div className="text-[#8a2be2] font-mono text-sm">{mockCarvData.lastActive}</div>
+            <div className="text-[#8a2be2] font-mono text-sm">
+              {mockCarvData.lastActive}
+            </div>
             <div className="text-[#8a2be2]/60 text-xs">Last Active</div>
           </div>
         </div>
@@ -222,7 +252,8 @@ export function CarvIdIntegration() {
                   Verification Required
                 </h3>
                 <p className="text-[#ffd700]/70 text-xs">
-                  Verify your Carv ID ownership to unlock additional features and earn reputation bonuses.
+                  Verify your Carv ID ownership to unlock additional features
+                  and earn reputation bonuses.
                 </p>
               </div>
             </div>
@@ -244,7 +275,9 @@ export function CarvIdIntegration() {
         >
           <div className="flex items-center gap-3 mb-4">
             <Key className="w-6 h-6 text-[#00bfff]" />
-            <h3 className="text-xl font-mono text-[#ffd700]">Connect Carv ID</h3>
+            <h3 className="text-xl font-mono text-[#ffd700]">
+              Connect Carv ID
+            </h3>
           </div>
 
           <form onSubmit={handleConnectCarvId} className="space-y-4">
@@ -279,17 +312,21 @@ export function CarvIdIntegration() {
                   ? [
                       "bg-[#00bfff]/20 text-[#00bfff]/60",
                       "border border-[#00bfff]/20",
-                      "cursor-not-allowed"
+                      "cursor-not-allowed",
                     ]
                   : [
                       "bg-gradient-to-r from-[#00bfff] to-[#8a2be2]",
                       "text-[#0a0a0a] font-semibold",
                       "hover:shadow-[0_0_20px_rgba(0,191,255,0.3)]",
-                      "active:scale-95"
+                      "active:scale-95",
                     ]
               )}
-              whileHover={!isConnecting && !contractLoading ? { scale: 1.02 } : {}}
-              whileTap={!isConnecting && !contractLoading ? { scale: 0.98 } : {}}
+              whileHover={
+                !isConnecting && !contractLoading ? { scale: 1.02 } : {}
+              }
+              whileTap={
+                !isConnecting && !contractLoading ? { scale: 0.98 } : {}
+              }
             >
               {isConnecting ? (
                 <div className="flex items-center justify-center gap-2">
@@ -321,7 +358,9 @@ export function CarvIdIntegration() {
         >
           <div className="flex items-center gap-3 mb-4">
             <CheckCircle className="w-6 h-6 text-[#7fff00]" />
-            <h3 className="text-xl font-mono text-[#ffd700]">Verify Ownership</h3>
+            <h3 className="text-xl font-mono text-[#ffd700]">
+              Verify Ownership
+            </h3>
           </div>
 
           <form onSubmit={handleVerifyOwnership} className="space-y-4">
@@ -355,16 +394,18 @@ export function CarvIdIntegration() {
                   ? [
                       "bg-[#7fff00]/20 text-[#7fff00]/60",
                       "border border-[#7fff00]/20",
-                      "cursor-not-allowed"
+                      "cursor-not-allowed",
                     ]
                   : [
                       "bg-gradient-to-r from-[#7fff00] to-[#00bfff]",
                       "text-[#0a0a0a] font-semibold",
                       "hover:shadow-[0_0_20px_rgba(127,255,0,0.3)]",
-                      "active:scale-95"
+                      "active:scale-95",
                     ]
               )}
-              whileHover={!isVerifying && !contractLoading ? { scale: 1.02 } : {}}
+              whileHover={
+                !isVerifying && !contractLoading ? { scale: 1.02 } : {}
+              }
               whileTap={!isVerifying && !contractLoading ? { scale: 0.98 } : {}}
             >
               {isVerifying ? (
@@ -398,7 +439,7 @@ export function CarvIdIntegration() {
             </div>
           </motion.div>
         )}
-        
+
         {success && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -440,27 +481,33 @@ export function CarvIdIntegration() {
         <h3 className="text-xl font-mono text-[#ffd700] mb-4 text-center">
           Carv ID Benefits
         </h3>
-        
+
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="text-center p-4 rounded-lg bg-[#00bfff]/10 border border-[#00bfff]/20">
             <Shield className="w-8 h-8 text-[#00bfff] mx-auto mb-3" />
-            <h4 className="text-[#00bfff] font-mono text-sm mb-2">Verified Identity</h4>
+            <h4 className="text-[#00bfff] font-mono text-sm mb-2">
+              Verified Identity
+            </h4>
             <p className="text-[#00bfff]/60 text-xs">
               Prove ownership of your digital identity across platforms
             </p>
           </div>
-          
+
           <div className="text-center p-4 rounded-lg bg-[#ffd700]/10 border border-[#ffd700]/20">
             <User className="w-8 h-8 text-[#ffd700] mx-auto mb-3" />
-            <h4 className="text-[#ffd700] font-mono text-sm mb-2">Reputation Boost</h4>
+            <h4 className="text-[#ffd700] font-mono text-sm mb-2">
+              Reputation Boost
+            </h4>
             <p className="text-[#ffd700]/60 text-xs">
               Earn bonus reputation and unlock exclusive features
             </p>
           </div>
-          
+
           <div className="text-center p-4 rounded-lg bg-[#7fff00]/10 border border-[#7fff00]/20">
             <ExternalLink className="w-8 h-8 text-[#7fff00] mx-auto mb-3" />
-            <h4 className="text-[#7fff00] font-mono text-sm mb-2">Cross-Platform</h4>
+            <h4 className="text-[#7fff00] font-mono text-sm mb-2">
+              Cross-Platform
+            </h4>
             <p className="text-[#7fff00]/60 text-xs">
               Use your verified identity across multiple applications
             </p>
@@ -468,5 +515,5 @@ export function CarvIdIntegration() {
         </div>
       </motion.div>
     </div>
-  )
-} 
+  );
+}

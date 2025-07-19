@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { WalletProvider } from "@/components/providers/WalletProvider";
 import { Toaster } from "sonner";
-import '@rainbow-me/rainbowkit/styles.css';
+import "@rainbow-me/rainbowkit/styles.css";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,9 +17,22 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Incarra - Cosmic AI Agent System",
-  description: "A decentralized AI agent system where each user is represented by a unique stellar entity — a conscious being of light, data, and memory, formed from cosmic matter.",
-  keywords: ["AI", "cosmic", "stellar", "agent", "decentralized", "constellation"],
+  description:
+    "A decentralized AI agent system where each user is represented by a unique stellar entity — a conscious being of light, data, and memory, formed from cosmic matter.",
+  keywords: [
+    "AI",
+    "cosmic",
+    "stellar",
+    "agent",
+    "decentralized",
+    "constellation",
+  ],
   authors: [{ name: "Incarra Team" }],
+  icons: {
+    icon: "/incarra_logo.png",
+    shortcut: "/incarra_logo.png",
+    apple: "/incarra_logo.png",
+  },
 };
 
 export const viewport: Viewport = {
@@ -36,7 +49,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link
           href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@300;400;500;600;700&display=swap"
           rel="stylesheet"
